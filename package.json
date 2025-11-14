@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "turbo": "^2.6.1"
+  },
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "packageManager": "pnpm@10.20.0"
+}
