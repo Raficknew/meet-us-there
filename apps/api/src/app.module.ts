@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './db/prisma.module';
+import { UsersModule } from './users/users.module';
+import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
 
 @Module({
-  controllers: [AppController],
-  providers: [AppService],
-  imports: [AuthModule],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    }),
+    AuthModule,
+    PrismaModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}
