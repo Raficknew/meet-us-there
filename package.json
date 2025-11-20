@@ -5,5 +5,5 @@
   "scripts": {
     "dev": "turbo dev"
   },
-  "packageManager": "pnpm@10.20.0"
+  "packageManager": "pnpm@10.23.0"
 }
