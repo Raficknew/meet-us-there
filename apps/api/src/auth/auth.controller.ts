@@ -13,6 +13,12 @@ export class AuthController {
   async googleAuth() {}
 
   @UseGuards(GoogleGuard)
+  @Get('callback')
+  async googleAuthRedirect(@User() user: GoogleUser, @Response() response) {
+    const token = await this.authService.googleAuth(user);
+    response.redirect(`${process.env.FRONTEND_URL}?access_token=${token}`);
+  }
+  @UseGuards(GoogleGuard)
   @Get('login')
   async googleLogin(@User() user: GoogleUser, @Response() response) {
     const token = await this.authService.googleAuth(user);
