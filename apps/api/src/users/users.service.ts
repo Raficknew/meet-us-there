@@ -14,10 +14,13 @@ export class UsersService {
   }
 
   async createUserWithGoogleData(data: GoogleUser): Promise<User> {
+    const name = data.lastName
+      ? data.firstName + ' ' + data.lastName
+      : data.firstName;
     const user = await this.prismaService.user.create({
       data: {
         email: data.email,
-        name: data.firstName + ' ' + data.lastName,
+        name,
         avatar_link: data.picture,
         google_id: data.id,
       },
