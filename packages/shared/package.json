@@ -1,0 +1,16 @@
+{
+  "name": "@repo/shared",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./responses": "./src/responses.ts",
+    "./requests": "./dist/requests.js"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
