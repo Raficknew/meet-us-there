@@ -12,8 +12,6 @@ export default function HomePage() {
     }
   }, [user]);
 
-  console.log("Current user:", user);
-
   return (
     <div>
       {user?.name}
