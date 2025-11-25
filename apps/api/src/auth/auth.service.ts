@@ -10,7 +10,7 @@ import { OAuth2Client } from 'google-auth-library';
 @Injectable()
 export class AuthService {
   private client = new OAuth2Client(
-    `${process.env.GOOGLE_CLIENT_ID}.apps.googleusercontent.com`,
+    `${process.env.GOOGLE_ID}.apps.googleusercontent.com`,
   );
 
   constructor(
