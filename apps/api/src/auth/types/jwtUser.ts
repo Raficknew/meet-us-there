@@ -1,6 +1,6 @@
 export type JWTUser = {
   id: string;
-  nick: string;
+  name: string;
   email: string;
   google_id: string;
 };

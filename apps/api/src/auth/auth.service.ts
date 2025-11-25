@@ -2,42 +2,65 @@ import { PrismaService } from '@/db/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleUser } from './types/googleUser';
+import { UsersService } from '@/users/users.service';
+import { GoogleUserResponse } from '@repo/shared/responses';
+import { JWTUser } from './types/jwtUser';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
+  private client = new OAuth2Client(
+    `${process.env.GOOGLE_CLIENT_ID}.apps.googleusercontent.com`,
+  );
+
   constructor(
     private jwtService: JwtService,
     private prismaService: PrismaService,
+    private userService: UsersService,
   ) {}
 
-  async googleAuth(user: GoogleUser) {
-    let queryUser = await this.prismaService.user.findFirst({
+  async googleAuth(user: GoogleUserResponse) {
+    let existingUser = await this.prismaService.user.findFirst({
       where: {
-        google_id: user.id,
+        email: user.email,
       },
     });
 
-    if (!queryUser) {
-      queryUser = await this.prismaService.user.create({
-        data: {
-          name: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ''}`,
-          email: user.email,
-          avatar_link: user.picture,
-          google_id: user.id,
-        },
+    if (!existingUser) {
+      existingUser = await this.userService.createUserWithGoogleData({
+        id: user.providerId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        picture: user.pictureUrl,
       });
-
-      return this.jwtService.sign(
-        {
-          user: {
-            id: queryUser.id,
-            name: queryUser.name,
-            email: queryUser.email,
-            google_id: user.id,
-          },
-        },
-        { secret: process.env.JWT_SECRET },
-      );
     }
+
+    const jwtUser: JWTUser = {
+      id: existingUser.id,
+      name: existingUser.name,
+      email: existingUser.email,
+      google_id: existingUser.google_id,
+    };
+
+    return this.jwtService.sign({
+      user: jwtUser,
+    });
+  }
+
+  async verifyGoogleToken(idToken: string): Promise<GoogleUser> {
+    const ticket = await this.client.verifyIdToken({
+      idToken,
+    });
+
+    const payload = ticket.getPayload();
+
+    return {
+      id: payload!.sub,
+      email: payload!.email!,
+      firstName: payload!.given_name!,
+      lastName: payload!.family_name!,
+      picture: payload!.picture!,
+    };
   }
 }
