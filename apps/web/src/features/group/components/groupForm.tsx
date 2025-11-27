@@ -9,6 +9,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 type GroupFormSchema = z.infer<typeof groupFormSchema>;
 
@@ -33,7 +35,7 @@ export const GroupForm = () => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Bug Title</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Nazwa</FieldLabel>
               <Input
                 {...field}
                 id={field.name}
@@ -45,6 +47,26 @@ export const GroupForm = () => {
             </Field>
           )}
         />
+        <Controller
+          name="description"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Opis (opcjonalny)</FieldLabel>
+              <Textarea
+                id={field.name}
+                placeholder="Spotykamy się raz w tygodniu, aby wspólnie programować"
+                rows={4}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Field orientation="horizontal">
+          <Button type="submit" form="group-form">
+            Dodaj
+          </Button>
+        </Field>
       </FieldGroup>
     </form>
   );
