@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { GroupService } from "../api/group";
 
 type GroupFormSchema = z.infer<typeof groupFormSchema>;
 
@@ -24,7 +25,7 @@ export const GroupForm = () => {
   });
 
   const onSubmit = (data: GroupFormSchema) => {
-    console.log(data);
+    GroupService.createGroup(data).then((res) => {});
   };
 
   return (
